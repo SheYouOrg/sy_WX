@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dawn.wx.dao.AccessTokenDao">
+
+    <select id="getByAt" resultType="AccessToken">
+        SELECT
+          *
+        FROM wx_access_token
+        WHERE access_token = #{at};
+    </select>
+    
+    <insert id="saveAccessToken">
+        INSERT INTO wx_access_token(access_token, expires_in, latest)
+        VALUES (#{at}, #{expiresIn}, #{latest});
+    </insert>
+
+    <update id="invalidAccesstoken">
+        UPDATE
+            wx_access_token
+        SET
+            invalid_time = #{invalidTime},
+            latest = #{latest}
+        WHERE
+            access_token = #{at};
+    </update>
+</mapper>

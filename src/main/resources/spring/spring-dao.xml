@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--配置整合mybatis-->
+    <!--配置数据库相关参数
+        properties属性 ${url}
+    -->
+    <context:property-placeholder location="classpath:jdbc.properties" />
+
+    <!--数据库连接池-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <!--配置连接池属性-->
+        <property name="driverClassName" value="${driver}">
+        </property>
+        <property name="url" value="${url}">
+        </property>
+        <property name="username" value="${jdbc.username}">
+        </property>
+        <property name="password" value="${jdbc.password}">
+        </property>
+        <!-- 连接池私有属性 -->
+        <!-- 连接池最大使用连接数 -->
+        <property name="maxActive" value="30">
+        </property>
+        <!-- 初始化连接大小 -->
+        <property name="initialSize" value="1">
+        </property>
+        <!-- 获取连接最大等待时间 -->
+        <property name="maxWait" value="60000">
+        </property>
+        <!-- 连接池最大空闲 -->
+        <!--<property name="maxIdle">
+            <value>20</value>
+        </property>-->
+        <!-- 连接池最小空闲 -->
+        <property name="minIdle" value="1">
+        </property>
+        <!-- 自动清除无用连接 -->
+        <property name="removeAbandoned" value="true">
+        </property>
+        <!-- 清除无用连接的等待时间 -->
+        <property name="removeAbandonedTimeout" value="180">
+        </property>
+        <!-- 连接属性 -->
+        <property name="connectionProperties" value="clientEncoding=UTF-8">
+        </property>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--注入数据库连接池-->
+        <property name="dataSource" ref="dataSource" />
+        <!-- 配置mybatis全局变量 -->
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+        <!-- 扫描entity包使用别名 -->
+        <!--<property name="typeAliasesPackage" value="com.dawnheaven.demo.seckill.entity;com.dawnheaven.web.spider.entity" />-->
+        <property name="typeAliasesPackage" value="com.dawn.wx.entity" />
+        <!-- 扫描sql配置文件：mapper需要的xml文件 -->
+        <property name="mapperLocations" value="classpath:mapper/*.xml" />
+
+    </bean>
+
+    <!--配置扫描dao接口包，动态实现dao接口，并注入到Spring容器中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 注入sqlSessionFactory -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+        <!-- 扫描Dao接口包 -->
+        <!--<property name="typeAliasesPackage" value="org.seckill.dao;org.seckill.dao2"></property>-->
+        <property name="basePackage" value="com.dawn.wx.dao" />
+    </bean>
+
+    <!-- 对数据源进行事务管理 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+</beans>
