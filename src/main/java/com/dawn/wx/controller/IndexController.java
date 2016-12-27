@@ -26,7 +26,7 @@ public class IndexController {
 
     @Autowired
     WxService wxService;
-    @RequestMapping("test")
+    @RequestMapping("testAT")
     public String testAt(HttpServletRequest request,
                          ModelMap model){
         AccessToken accessToken = atService.getAccessTokenByAt("");
@@ -36,5 +36,11 @@ public class IndexController {
             model.put("result", result);
         }
         return "test";
+    }
+
+    @RequestMapping("test")
+    public String test(HttpServletRequest request,ModelMap model){
+        model.addAttribute("result", "success");
+        return "test/test";
     }
 }
